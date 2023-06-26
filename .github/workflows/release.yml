@@ -1,0 +1,21 @@
+on:
+    push:
+        tags:
+            - release**
+
+name: Publish to release
+jobs:
+    deploy:
+        runs-on: github-runner
+        steps:
+            - name: 'clone repo'
+              uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - name: deploy
+              uses: dokku/github-action@master
+              with:
+                  git_remote_url: 'ssh://dokku@umami.umakers.io:22/umami'
+                  branch: main
+                  ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  git_push_flags: --force
